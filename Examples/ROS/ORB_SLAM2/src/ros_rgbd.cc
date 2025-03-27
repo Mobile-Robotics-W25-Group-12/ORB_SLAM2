@@ -24,6 +24,10 @@
 #include<fstream>
 #include<chrono>
 
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include<ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <message_filters/subscriber.h>

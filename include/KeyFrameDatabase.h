@@ -29,14 +29,20 @@
 #include "Frame.h"
 #include "ORBVocabulary.h"
 
-#include<mutex>
+#include <mutex>
 
+#define LOOP_CANDIDATES_DEFAULT // change to our custom method(s)
 
 namespace ORB_SLAM2
 {
 
 class KeyFrame;
 class Frame;
+
+struct ScoredKeyFrame {
+  float score;
+  KeyFrame *kf;
+};
 
 
 class KeyFrameDatabase
@@ -54,6 +60,14 @@ public:
    // Loop Detection
    std::vector<KeyFrame *> DetectLoopCandidates(KeyFrame* pKF, float minScore);
 
+   // Custom loop detection
+   float Score(KeyFrame* kf1, KeyFrame* kf2);
+
+   std::vector<KeyFrame *> CustomDetectLoopCandidates(KeyFrame* kf, float minScore);
+   std::vector<KeyFrame*> QueryCandidates(KeyFrame* kf, std::set<KeyFrame*> connectedFrames, float minScore);
+   std::vector<ScoredKeyFrame> FilterLoopCandidates(KeyFrame* kf, const std::vector<KeyFrame *>& candidates, float minScore, float minCommonWords);
+   std::vector<KeyFrame *> AccumlatedFilterLoopCandidates(KeyFrame* kf, const std::vector<ScoredKeyFrame>& candidates, float minScore, float minCommonWords);
+   
    // Relocalization
    std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F);
 

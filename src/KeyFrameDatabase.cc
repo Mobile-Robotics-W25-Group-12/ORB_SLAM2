@@ -23,6 +23,8 @@
 #include "KeyFrame.h"
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
 
+#include "VectorDatabase.h"
+
 #include<mutex>
 
 using namespace std;
@@ -34,6 +36,9 @@ KeyFrameDatabase::KeyFrameDatabase (const ORBVocabulary &voc):
     mpVoc(&voc)
 {
     mvInvertedFile.resize(voc.size());
+
+    // TODO pull path out into a parameter
+    mVectorDb.LoadNumpyVectors("hist.npy");
 }
 
 
@@ -43,6 +48,8 @@ void KeyFrameDatabase::add(KeyFrame *pKF)
 
     for(DBoW2::BowVector::const_iterator vit= pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit!=vend; vit++)
         mvInvertedFile[vit->first].push_back(pKF);
+
+    mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnId));
 }
 
 void KeyFrameDatabase::erase(KeyFrame* pKF)
@@ -205,6 +212,9 @@ vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, fl
 {
     set<KeyFrame*> connectedKeyFrames = kf->GetConnectedKeyFrames();
     std::vector<KeyFrame*> candidates{QueryCandidates(kf, connectedKeyFrames, minScore)};
+
+    auto scores = mVectorDb.GetAllScores(mVectorDb.GetNumpyVector(kf->mnId), mVectorDb.CosineSimilarity);
+    // std::cout << scores.begin()->first << " " << scores.begin()->second << std::endl;
 
     // Only compare against those keyframes that share enough words
     int maxCommonWords=0;

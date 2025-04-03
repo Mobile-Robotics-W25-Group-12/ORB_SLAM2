@@ -29,6 +29,8 @@
 #include "Frame.h"
 #include "ORBVocabulary.h"
 
+#include "VectorDatabase.h"
+
 #include <mutex>
 
 #define LOOP_CANDIDATES_DEFAULT // change to our custom method(s)
@@ -78,6 +80,8 @@ protected:
 
   // Inverted file
   std::vector<list<KeyFrame*> > mvInvertedFile;
+
+  VectorDatabase<float> mVectorDb;
 
   // Mutex
   std::mutex mMutex;

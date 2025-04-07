@@ -75,6 +75,7 @@ void LoopClosing::Run()
                if(ComputeSim3())
                {
                    // Perform loop fusion and pose graph optimization
+                   MetricLogger::instance().computeSuccess(true);
                    CorrectLoop();
                }
             }
@@ -114,7 +115,7 @@ bool LoopClosing::DetectLoop()
         mpCurrentKF->SetNotErase();
     }
 
-    MetricLogger::instance().startFrame(mpCurrentKF->mnId); 
+    MetricLogger::instance().startFrame(mpCurrentKF->mnFrameId); 
 
     //If the map contains less than 10 KF or less than 10 KF have passed from last loop detection
     if(mpCurrentKF->mnId<mLastLoopKFid+10)
@@ -131,7 +132,7 @@ bool LoopClosing::DetectLoop()
 
     // Query the database imposing the minimum score
     vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->CustomDetectLoopCandidates(mpCurrentKF, minScore);
-    MetricLogger::instance().numCandidates(vpCandidateKFs.size());
+    MetricLogger::instance().numFinalCandidates(vpCandidateKFs.size());
 
 
     // If there are no loop candidates, just add new keyframe and return false
@@ -272,6 +273,8 @@ bool LoopClosing::ComputeSim3()
 
         nCandidates++;
     }
+
+    // MetricLogger::instance()->
 
     bool bMatch = false;
 

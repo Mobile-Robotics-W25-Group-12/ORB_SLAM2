@@ -49,7 +49,7 @@ void KeyFrameDatabase::add(KeyFrame *pKF)
     for(DBoW2::BowVector::const_iterator vit= pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit!=vend; vit++)
         mvInvertedFile[vit->first].push_back(pKF);
 
-    mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnId));
+    mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnFrameId));
 }
 
 void KeyFrameDatabase::erase(KeyFrame* pKF)

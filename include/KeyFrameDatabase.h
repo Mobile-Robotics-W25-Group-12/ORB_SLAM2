@@ -26,6 +26,7 @@
 #include <list>
 #include <set>
 
+#include "MetricLogger.h"
 #include "KeyFrame.h"
 #include "Frame.h"
 #include "ORBVocabulary.h"
@@ -45,64 +46,6 @@ class Frame;
 struct ScoredKeyFrame {
   float score;
   KeyFrame *kf;
-};
-
-struct FrameMetrics
-{
-  int frameId{};
-  int numCandidates{};
-  bool loopDetected{false};
-};
-
-class MetricLogger
-{
-public:
-  void logFrame()
-  {
-    if (mActiveFrame)
-    {
-      mLogFile << mCurrentMetrics.frameId << "," << mCurrentMetrics.numCandidates << "," << mCurrentMetrics.loopDetected << "\n";
-      mActiveFrame = false;
-      mLogFile.flush();
-    }
-  }
-
-  void startFrame(int id)
-  {
-    if (mActiveFrame)
-    {
-      logFrame();
-      mCurrentMetrics = {};
-    }
-    mCurrentMetrics.frameId = id;
-    mActiveFrame = true;
-  }
-  
-  void numCandidates(int n)
-  {
-    mCurrentMetrics.numCandidates = n;
-  }
-
-  void loopDetected(bool detected)
-  {
-    mCurrentMetrics.loopDetected = detected;
-  }
-
-  static MetricLogger& instance()
-  {
-    static MetricLogger inst{};
-    return inst;
-  }
-
-private:
-  std::ofstream mLogFile;
-  FrameMetrics mCurrentMetrics{};
-  bool mActiveFrame{false};
-
-  MetricLogger() : mLogFile("log.csv")
-  {
-    mLogFile << "id,numCandidates,loopDetected\n";
-  }
 };
 
 class KeyFrameDatabase

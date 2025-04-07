@@ -202,6 +202,7 @@ bool LoopClosing::DetectLoop()
     }
 
     MetricLogger::instance().numConsistentCandidates(mvpEnoughConsistentCandidates.size());
+    MetricLogger::instance().consistentCandidates(mvpEnoughConsistentCandidates);
 
     // Update Covisibility Consistent Groups
     mvConsistentGroups = vCurrentConsistentGroups;

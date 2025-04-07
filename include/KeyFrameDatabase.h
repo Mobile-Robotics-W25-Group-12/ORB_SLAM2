@@ -42,6 +42,7 @@ namespace ORB_SLAM2
 
 class KeyFrame;
 class Frame;
+class MetricLogger;
 
 struct ScoredKeyFrame {
   float score;

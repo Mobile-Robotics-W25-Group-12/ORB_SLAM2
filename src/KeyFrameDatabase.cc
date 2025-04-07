@@ -208,6 +208,29 @@ float KeyFrameDatabase::Score(KeyFrame* kf1, KeyFrame* kf2)
     return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
 }
 
+
+float KeyFrameDatabase::MinScore(KeyFrame *kf) {
+    // Compute reference BoW similarity score
+    // This is the lowest score to a connected keyframe in the covisibility graph
+    // We will impose loop candidates to have a higher similarity than this
+    const vector<KeyFrame*> vpConnectedKeyFrames = kf->GetVectorCovisibleKeyFrames();
+    const DBoW2::BowVector &CurrentBowVec = kf->mBowVec;
+    float minScore = 1;
+    for(size_t i=0; i<vpConnectedKeyFrames.size(); i++)
+    {
+        KeyFrame* pKF = vpConnectedKeyFrames[i];
+        if(pKF->isBad())
+            continue;
+        const DBoW2::BowVector &BowVec = pKF->mBowVec;
+
+        float score = mpVoc->score(CurrentBowVec, BowVec);
+
+        if(score<minScore)
+            minScore = score;
+    }
+    return minScore;
+}
+
 vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, float minScore)
 {
     set<KeyFrame*> connectedKeyFrames = kf->GetConnectedKeyFrames();
@@ -292,7 +315,30 @@ vector<ScoredKeyFrame> KeyFrameDatabase::FilterLoopCandidates(KeyFrame* kf, cons
     }
 
     return lScoreAndMatch;
-#endif 
+#else
+    vector<ScoredKeyFrame> lScoreAndMatch;
+
+    int nscores=0;
+
+    // Compute similarity score. Retain the matches whose score is higher than minScore
+    for(auto lit=candidates.begin(), lend=candidates.end(); lit!=lend; lit++)
+    {
+        KeyFrame* pKFi = *lit;
+
+        if(pKFi->mnLoopWords>minCommonWords)
+        {
+            nscores++;
+
+            float si = mVectorDb.Score(kf->mnId,pKFi->mnId);
+
+            pKFi->mLoopScore = si;
+            if(si>=minScore)
+                lScoreAndMatch.push_back({si, pKFi});
+        }
+    }
+
+    return lScoreAndMatch;
+#endif
 }
 
 vector<KeyFrame *> KeyFrameDatabase::AccumlatedFilterLoopCandidates(KeyFrame* kf, const std::vector<ScoredKeyFrame>& candidates, float minScore, float minCommonWords)

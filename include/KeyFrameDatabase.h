@@ -123,6 +123,8 @@ public:
    // Custom loop detection
    float Score(KeyFrame* kf1, KeyFrame* kf2);
 
+   float MinScore(KeyFrame *kf);
+
    std::vector<KeyFrame *> CustomDetectLoopCandidates(KeyFrame* kf, float minScore);
    std::vector<KeyFrame*> QueryCandidates(KeyFrame* kf, std::set<KeyFrame*> connectedFrames, float minScore);
    std::vector<ScoredKeyFrame> FilterLoopCandidates(KeyFrame* kf, const std::vector<KeyFrame *>& candidates, float minScore, float minCommonWords);

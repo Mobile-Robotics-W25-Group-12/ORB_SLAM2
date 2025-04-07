@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <numeric>
 
 
 template<typename T>
@@ -40,6 +41,14 @@ public:
             scores[p.first] = scoreFunc(v, p.second);
         }
         return scores;
+    }
+
+    float Score(int id1, int id2) {
+        return InnerProduct(mVectors.at(id1), mVectors.at(id2));
+    }
+
+    static float InnerProduct(const std::vector<T> &a, const std::vector<T> &b) {
+        return std::inner_product(a.begin(), a.end(), b.begin(), 0);
     }
 
     static float CosineSimilarity(const std::vector<T> &a, const std::vector<T> &b) {

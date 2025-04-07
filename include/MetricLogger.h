@@ -8,9 +8,14 @@
 struct FrameMetrics
 {
   int frameId{};
-  int numFinalCandidates{};
+  int numInitialCandidates{};
+  int numFilteredCandidates{};
+  int numAccFilteredCandidates{};
+  int numConsistentCandidates{};
   bool loopDetected{false};
+  int numMatched{};
   bool computeSuccess{false};
+  int matchedKf{};
 };
 
 class MetricLogger
@@ -20,7 +25,16 @@ public:
   {
     if (mActiveFrame)
     {
-      mLogFile << mCurrentMetrics.frameId << "," << mCurrentMetrics.numFinalCandidates << "," << mCurrentMetrics.loopDetected << mCurrentMetrics.computeSuccess << "\n";
+      mLogFile 
+        << mCurrentMetrics.frameId << "," 
+        << mCurrentMetrics.numInitialCandidates << "," 
+        << mCurrentMetrics.numFilteredCandidates << "," 
+        << mCurrentMetrics.numAccFilteredCandidates << "," 
+        << mCurrentMetrics.numConsistentCandidates << "," 
+        << mCurrentMetrics.loopDetected << "," 
+        << mCurrentMetrics.numMatched << "," 
+        << mCurrentMetrics.computeSuccess << ","
+        << mCurrentMetrics.matchedKf << "\n";
       mActiveFrame = false;
       mLogFile.flush();
     }
@@ -31,15 +45,35 @@ public:
     if (mActiveFrame)
     {
       logFrame();
-      mCurrentMetrics = {};
     }
+    mCurrentMetrics = {};
     mCurrentMetrics.frameId = id;
     mActiveFrame = true;
   }
   
-  void numFinalCandidates(int n)
+  void numInitialCandidates(int n)
   {
-    mCurrentMetrics.numFinalCandidates = n;
+    mCurrentMetrics.numInitialCandidates = n;
+  }
+  
+  void numFilteredCandidates(int n)
+  {
+    mCurrentMetrics.numFilteredCandidates = n;
+  }
+  
+  void numAccFilteredCandidates(int n)
+  {
+    mCurrentMetrics.numAccFilteredCandidates = n;
+  }
+  
+  void numConsistentCandidates(int n)
+  {
+    mCurrentMetrics.numConsistentCandidates = n;
+  }
+  
+  void numMatched(int n)
+  {
+    mCurrentMetrics.numMatched = n;
   }
 
   void loopDetected(bool detected)
@@ -50,6 +84,11 @@ public:
   void computeSuccess(bool success)
   {
     mCurrentMetrics.computeSuccess = success;
+  }
+
+  void matchedKf(int matchedKf)
+  {
+    mCurrentMetrics.matchedKf = matchedKf;
   }
 
   static MetricLogger& instance()
@@ -63,9 +102,11 @@ private:
   FrameMetrics mCurrentMetrics{};
   bool mActiveFrame{false};
 
-  MetricLogger() : mLogFile(std::to_string(std::time(NULL)) + "_log.csv")
+  MetricLogger() : mLogFile("log_" + std::to_string(std::time(NULL)) + ".csv")
   {
-    mLogFile << "id,numFinalCandidates,loopDetected,computeSuccess\n";
+    mLogFile << "id,numInitialCandidates,numFilteredCandidates,numAccFilteredCandidates,"
+      "numConsistentCandidates,loopDetected,numMatched,"
+      "computeSuccess,matchedKf\n";
   }
 };
 

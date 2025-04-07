@@ -236,6 +236,8 @@ vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, fl
     set<KeyFrame*> connectedKeyFrames = kf->GetConnectedKeyFrames();
     std::vector<KeyFrame*> candidates{QueryCandidates(kf, connectedKeyFrames, minScore)};
 
+    MetricLogger::instance().numInitialCandidates(candidates.size());
+
     auto scores = mVectorDb.GetAllScores(mVectorDb.GetNumpyVector(kf->mnId), mVectorDb.CosineSimilarity);
     // std::cout << scores.begin()->first << " " << scores.begin()->second << std::endl;
 
@@ -255,7 +257,13 @@ vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, fl
 
     std::vector<ScoredKeyFrame> scoredCandidates = FilterLoopCandidates(kf, candidates, minScore, minCommonWords);
 
-    return AccumlatedFilterLoopCandidates(kf, scoredCandidates, minScore, minCommonWords);
+    MetricLogger::instance().numFilteredCandidates(scoredCandidates.size());
+
+    std::vector<KeyFrame*> accCandidates = AccumlatedFilterLoopCandidates(kf, scoredCandidates, minScore, minCommonWords);
+
+    MetricLogger::instance().numAccFilteredCandidates(accCandidates.size());
+
+    return accCandidates;
 }
 
 vector<KeyFrame*> KeyFrameDatabase::QueryCandidates(KeyFrame* kf, std::set<KeyFrame*> connectedFrames, float minScore)

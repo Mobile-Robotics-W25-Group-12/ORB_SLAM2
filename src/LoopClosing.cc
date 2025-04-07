@@ -69,7 +69,6 @@ void LoopClosing::Run()
             if(DetectLoop())
             {
                 MetricLogger::instance().loopDetected(true);
-                MetricLogger::instance().logFrame();
                // Compute similarity transformation [sR|t]
                // In the stereo/RGBD case s=1
                if(ComputeSim3())
@@ -80,6 +79,8 @@ void LoopClosing::Run()
                }
             }
         }       
+
+        MetricLogger::instance().logFrame();
 
         ResetIfRequested();
 
@@ -132,8 +133,6 @@ bool LoopClosing::DetectLoop()
 
     // Query the database imposing the minimum score
     vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->CustomDetectLoopCandidates(mpCurrentKF, minScore);
-    MetricLogger::instance().numFinalCandidates(vpCandidateKFs.size());
-
 
     // If there are no loop candidates, just add new keyframe and return false
     if(vpCandidateKFs.empty())
@@ -201,6 +200,8 @@ bool LoopClosing::DetectLoop()
             vCurrentConsistentGroups.push_back(cg);
         }
     }
+
+    MetricLogger::instance().numConsistentCandidates(mvpEnoughConsistentCandidates.size());
 
     // Update Covisibility Consistent Groups
     mvConsistentGroups = vCurrentConsistentGroups;
@@ -274,7 +275,7 @@ bool LoopClosing::ComputeSim3()
         nCandidates++;
     }
 
-    // MetricLogger::instance()->
+    MetricLogger::instance().numMatched(nCandidates);
 
     bool bMatch = false;
 
@@ -345,6 +346,8 @@ bool LoopClosing::ComputeSim3()
         mpCurrentKF->SetErase();
         return false;
     }
+
+    MetricLogger::instance().matchedKf(mpMatchedKF->mnFrameId);
 
     // Retrieve MapPoints seen in Loop Keyframe and neighbors
     vector<KeyFrame*> vpLoopConnectedKFs = mpMatchedKF->GetVectorCovisibleKeyFrames();

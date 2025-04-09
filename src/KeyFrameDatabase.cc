@@ -205,6 +205,8 @@ vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, float mi
 
 float KeyFrameDatabase::Score(KeyFrame* kf1, KeyFrame* kf2)
 {
+    // return mVectorDb.Score(kf1->mnId, kf2->mnId);
+
     return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
 }
 
@@ -221,9 +223,8 @@ float KeyFrameDatabase::MinScore(KeyFrame *kf) {
         KeyFrame* pKF = vpConnectedKeyFrames[i];
         if(pKF->isBad())
             continue;
-        const DBoW2::BowVector &BowVec = pKF->mBowVec;
 
-        float score = mpVoc->score(CurrentBowVec, BowVec);
+        float score = Score(kf, pKF);
 
         if(score<minScore)
             minScore = score;
@@ -314,30 +315,7 @@ vector<ScoredKeyFrame> KeyFrameDatabase::FilterLoopCandidates(KeyFrame* kf, cons
         {
             nscores++;
 
-            float si = mpVoc->score(kf->mBowVec,pKFi->mBowVec);
-
-            pKFi->mLoopScore = si;
-            if(si>=minScore)
-                lScoreAndMatch.push_back({si, pKFi});
-        }
-    }
-
-    return lScoreAndMatch;
-#else
-    vector<ScoredKeyFrame> lScoreAndMatch;
-
-    int nscores=0;
-
-    // Compute similarity score. Retain the matches whose score is higher than minScore
-    for(auto lit=candidates.begin(), lend=candidates.end(); lit!=lend; lit++)
-    {
-        KeyFrame* pKFi = *lit;
-
-        if(pKFi->mnLoopWords>minCommonWords)
-        {
-            nscores++;
-
-            float si = mVectorDb.Score(kf->mnId,pKFi->mnId);
+            float si = Score(kf, pKFi);
 
             pKFi->mLoopScore = si;
             if(si>=minScore)

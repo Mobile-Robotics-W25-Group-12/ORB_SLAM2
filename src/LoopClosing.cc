@@ -34,6 +34,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define NUM_RANSAC_INLIERS 20
+
 namespace ORB_SLAM2
 {
 
@@ -261,7 +263,7 @@ bool LoopClosing::ComputeSim3()
 
         int nmatches = matcher.SearchByBoW(mpCurrentKF,pKF,vvpMapPointMatches[i]);
 
-        if(nmatches<20)
+        if(nmatches<NUM_RANSAC_INLIERS)
         {
             vbDiscarded[i] = true;
             continue;
@@ -269,7 +271,7 @@ bool LoopClosing::ComputeSim3()
         else
         {
             Sim3Solver* pSolver = new Sim3Solver(mpCurrentKF,pKF,vvpMapPointMatches[i],mbFixScale);
-            pSolver->SetRansacParameters(0.99,20,300);
+            pSolver->SetRansacParameters(0.99,NUM_RANSAC_INLIERS,300);
             vpSim3Solvers[i] = pSolver;
         }
 
@@ -325,7 +327,7 @@ bool LoopClosing::ComputeSim3()
                 const int nInliers = Optimizer::OptimizeSim3(mpCurrentKF, pKF, vpMapPointMatches, gScm, 10, mbFixScale);
 
                 // If optimization is succesful stop ransacs and continue
-                if(nInliers>=20)
+                if(nInliers>=NUM_RANSAC_INLIERS)
                 {
                     bMatch = true;
                     mpMatchedKF = pKF;

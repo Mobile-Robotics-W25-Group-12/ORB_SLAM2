@@ -32,7 +32,7 @@ MetricLogger::MetricLogger()
   mLogFile << "id,numInitialCandidates,numFilteredCandidates,numAccFilteredCandidates,"
               "numConsistentCandidates,loopDetected,numMatched,"
               "computeSuccess,matchedKf" << std::endl;
-  mConsistentCandidateFile << "id", "frames" << std::endl;
+  mConsistentCandidateFile << "id, frames" << std::endl;
 }
 
 void MetricLogger::logFrame()

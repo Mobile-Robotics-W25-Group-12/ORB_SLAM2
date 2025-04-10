@@ -205,7 +205,7 @@ vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, float mi
 
 float KeyFrameDatabase::Score(KeyFrame* kf1, KeyFrame* kf2)
 {
-    // return mVectorDb.Score(kf1->mnId, kf2->mnId);
+    // return mVectorDb.InnerProduct(mVectorDb.GetNumpyVector(kf1->mnFrameId), mVectorDb.GetNumpyVector(kf2->mnFrameId));
 
     return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
 }
@@ -239,7 +239,7 @@ vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, fl
 
     MetricLogger::instance().numInitialCandidates(candidates.size());
 
-    auto scores = mVectorDb.GetAllScores(mVectorDb.GetNumpyVector(kf->mnId), mVectorDb.CosineSimilarity);
+    // auto scores = mVectorDb.GetAllScores(mVectorDb.GetNumpyVector(kf->mnId), mVectorDb.CosineSimilarity);
     // std::cout << scores.begin()->first << " " << scores.begin()->second << std::endl;
 
     // Only compare against those keyframes that share enough words

@@ -35,6 +35,8 @@
 #include <stdlib.h>
 
 #define NUM_RANSAC_INLIERS 20
+#define PROJECTION_THRESHOLD 10
+#define FINAL_NUM_MATCH_POINTS 40
 
 namespace ORB_SLAM2
 {
@@ -132,6 +134,8 @@ bool LoopClosing::DetectLoop()
     // This is the lowest score to a connected keyframe in the covisibility graph
     // We will impose loop candidates to have a higher similarity than this
     float minScore = mpKeyFrameDB->MinScore(mpCurrentKF);
+
+    MetricLogger::instance().minScore(minScore);
 
     // Query the database imposing the minimum score
     vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->CustomDetectLoopCandidates(mpCurrentKF, minScore);
@@ -375,7 +379,7 @@ bool LoopClosing::ComputeSim3()
     }
 
     // Find more matches projecting with the computed Sim3
-    matcher.SearchByProjection(mpCurrentKF, mScw, mvpLoopMapPoints, mvpCurrentMatchedPoints,10);
+    matcher.SearchByProjection(mpCurrentKF, mScw, mvpLoopMapPoints, mvpCurrentMatchedPoints,PROJECTION_THRESHOLD);
 
     // If enough matches accept Loop
     int nTotalMatches = 0;
@@ -385,7 +389,7 @@ bool LoopClosing::ComputeSim3()
             nTotalMatches++;
     }
 
-    if(nTotalMatches>=40)
+    if(nTotalMatches>=FINAL_NUM_MATCH_POINTS)
     {
         for(int i=0; i<nInitialCandidates; i++)
             if(mvpEnoughConsistentCandidates[i]!=mpMatchedKF)

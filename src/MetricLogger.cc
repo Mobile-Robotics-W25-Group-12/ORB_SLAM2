@@ -31,7 +31,7 @@ MetricLogger::MetricLogger()
 
   mLogFile << "id,numInitialCandidates,numFilteredCandidates,numAccFilteredCandidates,"
               "numConsistentCandidates,loopDetected,numMatched,"
-              "computeSuccess,matchedKf" << std::endl;
+              "matchedKf,computeSuccess,minScore" << std::endl;
   mConsistentCandidateFile << "id, frames" << std::endl;
 }
 
@@ -46,9 +46,10 @@ void MetricLogger::logFrame()
       << mCurrentMetrics.numAccFilteredCandidates << "," 
       << mCurrentMetrics.numConsistentCandidates << "," 
       << mCurrentMetrics.loopDetected << "," 
-      << mCurrentMetrics.numMatched << "," 
+      << mCurrentMetrics.numMatched << ","
+      << mCurrentMetrics.matchedKf << ","
       << mCurrentMetrics.computeSuccess << ","
-      << mCurrentMetrics.matchedKf << "\n";
+      << mCurrentMetrics.minScore << "\n";
     mActiveFrame = false;
     mLogFile.flush();
   }
@@ -103,6 +104,11 @@ void MetricLogger::computeSuccess(bool success)
 void MetricLogger::matchedKf(int matchedKf)
 {
   mCurrentMetrics.matchedKf = matchedKf;
+}
+
+void MetricLogger::minScore(float score)
+{
+  mCurrentMetrics.minScore = score;
 }
 
 void MetricLogger::consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates)

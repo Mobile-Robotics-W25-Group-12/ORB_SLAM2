@@ -19,8 +19,10 @@ struct FrameMetrics
   int numConsistentCandidates{};
   bool loopDetected{false};
   int numMatched{};
-  bool computeSuccess{false};
   int matchedKf{};
+  bool poseEstimated{false};
+  bool computeSuccess{false};
+  float minScore{};
 };
 
 class MetricLogger
@@ -39,6 +41,7 @@ public:
   void loopDetected(bool detected);
   void computeSuccess(bool success);
   void matchedKf(int matchedKf);
+  void minScore(float score);
   
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
 

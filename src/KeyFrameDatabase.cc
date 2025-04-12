@@ -26,6 +26,7 @@
 #include "VectorDatabase.h"
 
 #include<mutex>
+#include<algorithm>
 
 using namespace std;
 
@@ -37,8 +38,10 @@ KeyFrameDatabase::KeyFrameDatabase (const ORBVocabulary &voc):
 {
     mvInvertedFile.resize(voc.size());
 
-    // TODO pull path out into a parameter
-    mVectorDb.LoadNumpyVectors("hist.npy");
+    if(mUseVectorScores) {
+        // TODO pull path out into a parameter
+        mVectorDb.LoadNumpyVectors("datasets/dataset/sequences/00/image_0/BoQStacked.npy");
+    }
 }
 
 
@@ -49,7 +52,9 @@ void KeyFrameDatabase::add(KeyFrame *pKF)
     for(DBoW2::BowVector::const_iterator vit= pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit!=vend; vit++)
         mvInvertedFile[vit->first].push_back(pKF);
 
-    mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnFrameId));
+    if(mUseVectorScores) {
+        mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnFrameId));
+    }
 }
 
 void KeyFrameDatabase::erase(KeyFrame* pKF)
@@ -205,9 +210,11 @@ vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, float mi
 
 float KeyFrameDatabase::Score(KeyFrame* kf1, KeyFrame* kf2)
 {
-    // return mVectorDb.InnerProduct(mVectorDb.GetNumpyVector(kf1->mnFrameId), mVectorDb.GetNumpyVector(kf2->mnFrameId));
-
-    return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
+    if(mUseVectorScores) {
+        return mVectorDb.InnerProduct(mVectorDb.GetNumpyVector(kf1->mnFrameId), mVectorDb.GetNumpyVector(kf2->mnFrameId));
+    } else {
+        return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
+    }
 }
 
 
@@ -228,6 +235,9 @@ float KeyFrameDatabase::MinScore(KeyFrame *kf) {
 
         if(score<minScore)
             minScore = score;
+    }
+    if(mUseVectorScores) {
+        minScore = std::min(minScore, 0.6f);
     }
     return minScore;
 }

@@ -89,6 +89,8 @@ protected:
 
   // Mutex
   std::mutex mMutex;
+
+  bool mUseVectorScores = false;
 };
 
 } //namespace ORB_SLAM

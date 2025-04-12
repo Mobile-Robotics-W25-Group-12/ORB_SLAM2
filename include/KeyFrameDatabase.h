@@ -77,6 +77,8 @@ public:
    // Relocalization
    std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F);
 
+   static constexpr bool kUseVectorScores = false;
+
 protected:
 
   // Associated vocabulary
@@ -89,8 +91,6 @@ protected:
 
   // Mutex
   std::mutex mMutex;
-
-  bool mUseVectorScores = false;
 };
 
 } //namespace ORB_SLAM

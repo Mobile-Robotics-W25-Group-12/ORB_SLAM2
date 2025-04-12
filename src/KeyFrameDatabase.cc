@@ -38,9 +38,11 @@ KeyFrameDatabase::KeyFrameDatabase (const ORBVocabulary &voc):
 {
     mvInvertedFile.resize(voc.size());
 
-    if(mUseVectorScores) {
+    if(kUseVectorScores) {
         // TODO pull path out into a parameter
-        mVectorDb.LoadNumpyVectors("datasets/dataset/sequences/00/image_0/BoQStacked.npy");
+        std::string filepath = "datasets/dataset/sequences/00/image_0/BoQStacked.npy";
+        MetricLogger::instance().logVectorFilepath(filepath);
+        mVectorDb.LoadNumpyVectors(filepath);
     }
 }
 
@@ -52,7 +54,7 @@ void KeyFrameDatabase::add(KeyFrame *pKF)
     for(DBoW2::BowVector::const_iterator vit= pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit!=vend; vit++)
         mvInvertedFile[vit->first].push_back(pKF);
 
-    if(mUseVectorScores) {
+    if(kUseVectorScores) {
         mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnFrameId));
     }
 }
@@ -210,7 +212,7 @@ vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, float mi
 
 float KeyFrameDatabase::Score(KeyFrame* kf1, KeyFrame* kf2)
 {
-    if(mUseVectorScores) {
+    if(kUseVectorScores) {
         return mVectorDb.InnerProduct(mVectorDb.GetNumpyVector(kf1->mnFrameId), mVectorDb.GetNumpyVector(kf2->mnFrameId));
     } else {
         return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
@@ -236,7 +238,7 @@ float KeyFrameDatabase::MinScore(KeyFrame *kf) {
         if(score<minScore)
             minScore = score;
     }
-    if(mUseVectorScores) {
+    if(kUseVectorScores) {
         minScore = std::min(minScore, 0.6f);
     }
     return minScore;

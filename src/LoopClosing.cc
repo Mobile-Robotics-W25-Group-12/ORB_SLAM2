@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_RANSAC_INLIERS 20
+#define NUM_RANSAC_INLIERS 5
 #define PROJECTION_THRESHOLD 10
 #define FINAL_NUM_MATCH_POINTS 40
 
@@ -64,18 +64,36 @@ void LoopClosing::Run()
 {
     mbFinished =false;
 
+    MetricLogger::instance().logParams(
+        KeyFrameDatabase::kUseVectorScores,
+        NUM_RANSAC_INLIERS,
+        PROJECTION_THRESHOLD,
+        FINAL_NUM_MATCH_POINTS
+    );
+
     while(1)
     {
         // Check if there are keyframes in the queue
         if(CheckNewKeyFrames())
         {
             // Detect loop candidates and check covisibility consistency
-            if(DetectLoop())
+            auto start = std::chrono::high_resolution_clock::now();
+            bool loopDetected = DetectLoop();
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<float, std::milli> duration = end - start;
+            MetricLogger::instance().detectLoopDuration(duration.count());
+            if(loopDetected)
             {
                 MetricLogger::instance().loopDetected(true);
                // Compute similarity transformation [sR|t]
                // In the stereo/RGBD case s=1
-               if(ComputeSim3())
+               start = std::chrono::high_resolution_clock::now();
+               bool computedSim = ComputeSim3();               
+               end = std::chrono::high_resolution_clock::now();
+               duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+               MetricLogger::instance().computeSimDuration(duration.count());
+
+               if(computedSim)
                {
                    // Perform loop fusion and pose graph optimization
                    MetricLogger::instance().computeSuccess(true);
@@ -85,6 +103,7 @@ void LoopClosing::Run()
         }       
 
         MetricLogger::instance().logFrame();
+        MetricLogger::instance().flush();
 
         ResetIfRequested();
 

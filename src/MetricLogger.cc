@@ -5,6 +5,7 @@
 
 #include "KeyFrame.h"
 #include "Converter.h"
+#include "KeyFrameDatabase.h"
 
 static std::string getTimestamp() {
     std::time_t now = std::time(nullptr);
@@ -28,6 +29,7 @@ MetricLogger::MetricLogger()
   mLogDir = "logs/" + getTimestamp();
   system(("mkdir -p " + mLogDir).c_str());
   mLogFile = std::ofstream{mLogDir + "/log.csv"};
+  mFilteredCandidateFile = std::ofstream{mLogDir + "/filtered_candidates.csv"};
   mConsistentCandidateFile = std::ofstream{mLogDir + "/consistent_candidates.csv"};
   mParamsFile = std::ofstream{mLogDir + "/params.txt"};
   // mTrajectoryFile = std::ofstream{log_dir + "trajectory.txt"}
@@ -123,6 +125,18 @@ void MetricLogger::matchedKf(int matchedKf)
 void MetricLogger::minScore(float score)
 {
   mCurrentMetrics.minScore = score;
+}
+
+void MetricLogger::filteredCandidates(const std::vector<ScoredKeyFrame>& candidates)
+{
+  if (candidates.empty()) return;
+
+  mFilteredCandidateFile << mCurrentMetrics.frameId << ","; 
+  for (auto& c : candidates)
+  {
+    mFilteredCandidateFile << c.kf->mnFrameId << "," << c.score << ",";
+  }
+  mFilteredCandidateFile << "\n";
 }
 
 void MetricLogger::consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates)

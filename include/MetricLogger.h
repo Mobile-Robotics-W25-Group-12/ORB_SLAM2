@@ -9,6 +9,7 @@ namespace ORB_SLAM2
 {
 
 class KeyFrame;
+class ScoredKeyFrame;
 
 struct FrameMetrics
 {
@@ -49,6 +50,7 @@ public:
   void flush()
   {
     mLogFile.flush();
+    mFilteredCandidateFile.flush();
     mConsistentCandidateFile.flush();
     mParamsFile.flush();
     mTrajectoryFile.flush();
@@ -64,6 +66,7 @@ public:
     mCurrentMetrics.computeSimDurationMs = ms;
   }
   
+  void filteredCandidates(const std::vector<ScoredKeyFrame>& candidates);
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
 
   void logParams(bool useVectorScores, int numRansacInliers, int projTreshold, int numMatchPoints) {
@@ -92,6 +95,7 @@ private:
 
   std::string mLogDir;
   std::ofstream mLogFile;
+  std::ofstream mFilteredCandidateFile;
   std::ofstream mConsistentCandidateFile;
   std::ofstream mParamsFile;
   std::ofstream mTrajectoryFile;

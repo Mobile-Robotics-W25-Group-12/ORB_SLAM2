@@ -46,7 +46,7 @@ public:
     }
 
     static float InnerProduct(const std::vector<T> &a, const std::vector<T> &b) {
-        return std::inner_product(a.begin(), a.end(), b.begin(), 0);
+        return std::inner_product(a.begin(), a.end(), b.begin(), 0.0);
     }
 
 private:

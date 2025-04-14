@@ -133,23 +133,7 @@ int main(int argc, char **argv)
 
 void LoadImages(const string &strPathToSequence, vector<string> &vstrImageFilenames, vector<double> &vTimestamps, const int &num_frames)
 {
-    // ifstream fTimes;
-    // string strPathTimeFile = strPathToSequence + "/times.txt";
-    // fTimes.open(strPathTimeFile.c_str());
-    // while(!fTimes.eof())
-    // {
-    //     string s;
-    //     getline(fTimes,s);
-    //     if(!s.empty())
-    //     {
-    //         stringstream ss;
-    //         ss << s;
-    //         double t;
-    //         ss >> t;
-    //         vTimestamps.push_back(t);
-    //     }
-    // }
-    cout << "in load images" << endl;
+    // cout << "in load images" << endl;
     vTimestamps.resize(num_frames);
     vstrImageFilenames.resize(num_frames);
     string strPrefixLeft = strPathToSequence;
@@ -159,18 +143,6 @@ void LoadImages(const string &strPathToSequence, vector<string> &vstrImageFilena
         stringstream ss;
         ss << i;
         vstrImageFilenames[i-1] = strPrefixLeft + ss.str() +  ".jpg";
-        cout << vstrImageFilenames[i-1] << endl;
+        // cout << vstrImageFilenames[i-1] << endl;
     }
-
-    // string strPrefixLeft = strPathToSequence + "/image_0/";
-
-    // const int nTimes = vTimestamps.size();
-    // vstrImageFilenames.resize(num_frames);
-
-    // for(int i=0; i<nTimes; i++)
-    // {
-    //     stringstream ss;
-    //     ss << setfill('0') << setw(6) << i;
-    //     vstrImageFilenames[i] = strPrefixLeft + ss.str() + ".png";
-    // }
 }

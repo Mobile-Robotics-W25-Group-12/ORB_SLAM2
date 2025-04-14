@@ -270,6 +270,7 @@ vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, fl
 
     std::vector<ScoredKeyFrame> scoredCandidates = FilterLoopCandidates(kf, candidates, minScore, minCommonWords);
 
+    MetricLogger::instance().filteredCandidates(scoredCandidates);
     MetricLogger::instance().numFilteredCandidates(scoredCandidates.size());
 
     std::vector<KeyFrame*> accCandidates = AccumlatedFilterLoopCandidates(kf, scoredCandidates, minScore, minCommonWords);

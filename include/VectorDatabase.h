@@ -23,6 +23,11 @@ public:
         for(int i = 0; i < numFrames; ++i) {
             mAllVectors.emplace_back(data.data.begin() + i*dimensions, data.data.begin() + (i+1)*dimensions);
         }
+
+        for(auto v : mAllVectors[0]) {
+            std::cout << v << " ";
+        }
+        std::cout << std::endl;
     }
 
     const std::vector<T>& GetNumpyVector(int frameId) {

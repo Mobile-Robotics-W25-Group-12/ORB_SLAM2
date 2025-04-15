@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <set>
 
 namespace ORB_SLAM2
 {
@@ -66,24 +67,26 @@ public:
     mCurrentMetrics.computeSimDurationMs = ms;
   }
   
+  void connectedFrames(const std::set<KeyFrame*> connectedFrames);
+  void initialCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void filteredCandidates(const std::vector<ScoredKeyFrame>& candidates);
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
 
   void logParams(bool useVectorScores, int numRansacInliers, int projTreshold, int numMatchPoints) {
-    mParamsFile << "useVectorScores = " << useVectorScores << "\n";
-    mParamsFile << "numRansacInliers = " << numRansacInliers << "\n";
-    mParamsFile << "projTreshold = " << projTreshold << "\n";
-    mParamsFile << "numMatchPoints = " << numMatchPoints << std::endl;    
+    mParamsFile << "useVectorScores: " << useVectorScores << "\n";
+    mParamsFile << "numRansacInliers: " << numRansacInliers << "\n";
+    mParamsFile << "projTreshold: " << projTreshold << "\n";
+    mParamsFile << "numMatchPoints: " << numMatchPoints << std::endl;    
   }
 
   void logVectorFilepath(const std::string& filepath)
   { 
-    mParamsFile << "vectorFilepath = " << filepath << std::endl;
+    mParamsFile << "vectorFilepath: " << filepath << std::endl;
   }
 
   void logDatasetPath(const std::string& path)
   { 
-    mParamsFile << "datasetPath = " << path << std::endl;
+    mParamsFile << "datasetPath: " << path << std::endl;
   }
 
   std::string getLogDirectory() {
@@ -95,6 +98,8 @@ private:
 
   std::string mLogDir;
   std::ofstream mLogFile;
+  std::ofstream mConnectedFramesFile;
+  std::ofstream mInitialCandidateFile;
   std::ofstream mFilteredCandidateFile;
   std::ofstream mConsistentCandidateFile;
   std::ofstream mParamsFile;

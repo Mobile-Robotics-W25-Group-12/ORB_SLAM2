@@ -25,6 +25,8 @@
 
 #include "VectorDatabase.h"
 
+#include "LoopClosureConfig.h"
+
 #include<mutex>
 #include<algorithm>
 
@@ -34,13 +36,12 @@ namespace ORB_SLAM2
 {
 
 KeyFrameDatabase::KeyFrameDatabase (const ORBVocabulary &voc):
-    mpVoc(&voc)
+    mpVoc(&voc), loopClosureConfig(LoopClosureConfig::instance())
 {
     mvInvertedFile.resize(voc.size());
 
-    if(kUseVectorScores) {
-        // TODO pull path out into a parameter
-        std::string filepath = "datasets/dataset/sequences/00/image_0/BoQStacked.npy";
+    if(loopClosureConfig.useVectorScores) {
+        std::string filepath = loopClosureConfig.vectorFilepath;
         MetricLogger::instance().logVectorFilepath(filepath);
         mVectorDb.LoadNumpyVectors(filepath);
     }
@@ -54,7 +55,7 @@ void KeyFrameDatabase::add(KeyFrame *pKF)
     for(DBoW2::BowVector::const_iterator vit= pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit!=vend; vit++)
         mvInvertedFile[vit->first].push_back(pKF);
 
-    if(kUseVectorScores) {
+    if(loopClosureConfig.useVectorScores) {
         mVectorDb.AddKeyframeVector(pKF->mnId, mVectorDb.GetNumpyVector(pKF->mnFrameId));
     }
 }
@@ -212,7 +213,7 @@ vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, float mi
 
 float KeyFrameDatabase::Score(KeyFrame* kf1, KeyFrame* kf2)
 {
-    if(kUseVectorScores) {
+    if(loopClosureConfig.useVectorScores) {
         return mVectorDb.InnerProduct(mVectorDb.GetNumpyVector(kf1->mnFrameId), mVectorDb.GetNumpyVector(kf2->mnFrameId));
     } else {
         return mpVoc->score(kf1->mBowVec, kf2->mBowVec);
@@ -238,8 +239,8 @@ float KeyFrameDatabase::MinScore(KeyFrame *kf) {
         if(score<minScore)
             minScore = score;
     }
-    if(kUseVectorScores) {
-        minScore = std::min(minScore, 0.6f);
+    if(loopClosureConfig.useVectorScores) {
+        minScore = std::max(minScore, 0.6f);
     }
     return minScore;
 }
@@ -247,9 +248,11 @@ float KeyFrameDatabase::MinScore(KeyFrame *kf) {
 vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, float minScore)
 {
     set<KeyFrame*> connectedKeyFrames = kf->GetConnectedKeyFrames();
-    std::vector<KeyFrame*> candidates{QueryCandidates(kf, connectedKeyFrames, minScore)};
+    MetricLogger::instance().connectedFrames(connectedKeyFrames);
 
+    std::vector<KeyFrame*> candidates{QueryCandidates(kf, connectedKeyFrames, minScore)};
     MetricLogger::instance().numInitialCandidates(candidates.size());
+    MetricLogger::instance().initialCandidates(candidates);
 
     // auto scores = mVectorDb.GetAllScores(mVectorDb.GetNumpyVector(kf->mnId), mVectorDb.CosineSimilarity);
     // std::cout << scores.begin()->first << " " << scores.begin()->second << std::endl;

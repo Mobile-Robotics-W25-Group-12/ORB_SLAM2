@@ -1,0 +1,5 @@
+vectorFilepath: datasets/kitti_color/sequences/06/stacked_features.npy
+useVectorScores: true
+numRansacInliers: 5
+projTreshold: 10
+numMatchPoints: 40

@@ -28,6 +28,8 @@
 
 #include "ORBmatcher.h"
 
+#include "LoopClosureConfig.h"
+
 #include<mutex>
 #include<thread>
 #include <unistd.h>
@@ -43,7 +45,8 @@ namespace ORB_SLAM2
 
 LoopClosing::LoopClosing(Map *pMap, KeyFrameDatabase *pDB, ORBVocabulary *pVoc, const bool bFixScale):
     mbResetRequested(false), mbFinishRequested(false), mbFinished(true), mpMap(pMap),
-    mpKeyFrameDB(pDB), mpORBVocabulary(pVoc), mpMatchedKF(NULL), mLastLoopKFid(0), mbRunningGBA(false), mbFinishedGBA(true),
+    mpKeyFrameDB(pDB), mpORBVocabulary(pVoc), mLoopClosureConfig(LoopClosureConfig::instance()),
+    mpMatchedKF(NULL), mLastLoopKFid(0), mbRunningGBA(false), mbFinishedGBA(true),
     mbStopGBA(false), mpThreadGBA(NULL), mbFixScale(bFixScale), mnFullBAIdx(0)
 {
     mnCovisibilityConsistencyTh = 3;
@@ -65,10 +68,10 @@ void LoopClosing::Run()
     mbFinished =false;
 
     MetricLogger::instance().logParams(
-        KeyFrameDatabase::kUseVectorScores,
-        NUM_RANSAC_INLIERS,
-        PROJECTION_THRESHOLD,
-        FINAL_NUM_MATCH_POINTS
+        mLoopClosureConfig.useVectorScores,
+        mLoopClosureConfig.numRansacInliers,
+        mLoopClosureConfig.projTreshold,
+        mLoopClosureConfig.numMatchPoints
     );
 
     while(1)
@@ -294,7 +297,7 @@ bool LoopClosing::ComputeSim3()
         else
         {
             Sim3Solver* pSolver = new Sim3Solver(mpCurrentKF,pKF,vvpMapPointMatches[i],mbFixScale);
-            pSolver->SetRansacParameters(0.99,NUM_RANSAC_INLIERS,300);
+            pSolver->SetRansacParameters(0.99,mLoopClosureConfig.numRansacInliers,300);
             vpSim3Solvers[i] = pSolver;
         }
 
@@ -350,7 +353,7 @@ bool LoopClosing::ComputeSim3()
                 const int nInliers = Optimizer::OptimizeSim3(mpCurrentKF, pKF, vpMapPointMatches, gScm, 10, mbFixScale);
 
                 // If optimization is succesful stop ransacs and continue
-                if(nInliers>=NUM_RANSAC_INLIERS)
+                if(nInliers>=mLoopClosureConfig.numRansacInliers)
                 {
                     bMatch = true;
                     mpMatchedKF = pKF;
@@ -398,7 +401,7 @@ bool LoopClosing::ComputeSim3()
     }
 
     // Find more matches projecting with the computed Sim3
-    matcher.SearchByProjection(mpCurrentKF, mScw, mvpLoopMapPoints, mvpCurrentMatchedPoints,PROJECTION_THRESHOLD);
+    matcher.SearchByProjection(mpCurrentKF, mScw, mvpLoopMapPoints, mvpCurrentMatchedPoints,mLoopClosureConfig.projTreshold);
 
     // If enough matches accept Loop
     int nTotalMatches = 0;
@@ -408,7 +411,7 @@ bool LoopClosing::ComputeSim3()
             nTotalMatches++;
     }
 
-    if(nTotalMatches>=FINAL_NUM_MATCH_POINTS)
+    if(nTotalMatches>=mLoopClosureConfig.numMatchPoints)
     {
         for(int i=0; i<nInitialCandidates; i++)
             if(mvpEnoughConsistentCandidates[i]!=mpMatchedKF)

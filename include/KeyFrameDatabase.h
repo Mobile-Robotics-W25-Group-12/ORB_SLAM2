@@ -33,6 +33,8 @@
 
 #include "VectorDatabase.h"
 
+#include "LoopClosureConfig.h"
+
 #include <mutex>
 
 #define LOOP_CANDIDATES_DEFAULT // change to our custom method(s)
@@ -77,8 +79,6 @@ public:
    // Relocalization
    std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F);
 
-   static constexpr bool kUseVectorScores = false;
-
 protected:
 
   // Associated vocabulary
@@ -88,6 +88,8 @@ protected:
   std::vector<list<KeyFrame*> > mvInvertedFile;
 
   VectorDatabase<float> mVectorDb;
+
+  LoopClosureConfig &loopClosureConfig; 
 
   // Mutex
   std::mutex mMutex;

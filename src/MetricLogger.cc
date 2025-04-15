@@ -29,15 +29,17 @@ MetricLogger::MetricLogger()
   mLogDir = "logs/" + getTimestamp();
   system(("mkdir -p " + mLogDir).c_str());
   mLogFile = std::ofstream{mLogDir + "/log.csv"};
+  mConnectedFramesFile = std::ofstream{mLogDir + "/connected_frames.csv"};
+  mInitialCandidateFile = std::ofstream{mLogDir + "/initial_candidates.csv"};
   mFilteredCandidateFile = std::ofstream{mLogDir + "/filtered_candidates.csv"};
   mConsistentCandidateFile = std::ofstream{mLogDir + "/consistent_candidates.csv"};
-  mParamsFile = std::ofstream{mLogDir + "/params.txt"};
+  mParamsFile = std::ofstream{mLogDir + "/params.yaml"};
   // mTrajectoryFile = std::ofstream{log_dir + "trajectory.txt"}
 
   mLogFile << "id,numInitialCandidates,numFilteredCandidates,numAccFilteredCandidates,"
               "numConsistentCandidates,loopDetected,numMatched,"
               "matchedKf,computeSuccess,minScore,detectLoopMs,computeSimMs" << std::endl;
-  mConsistentCandidateFile << "id, frames" << std::endl;
+  // mConsistentCandidateFile << "id, frames" << std::endl;
 }
 
 void MetricLogger::logFrame()
@@ -127,6 +129,31 @@ void MetricLogger::minScore(float score)
   mCurrentMetrics.minScore = score;
 }
 
+void MetricLogger::connectedFrames(const std::set<ORB_SLAM2::KeyFrame*> connectedFrames) {
+  if (connectedFrames.empty()) return;
+
+  mConnectedFramesFile << mCurrentMetrics.frameId << ","; 
+  for (auto& c : connectedFrames)
+  {
+    mConnectedFramesFile << c->mnFrameId << ",";
+  }
+  mConnectedFramesFile.seekp(-1, mConnectedFramesFile.cur);
+  mConnectedFramesFile << "\n";
+}
+
+void MetricLogger::initialCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates)
+{
+  if (candidates.empty()) return;
+
+  mInitialCandidateFile << mCurrentMetrics.frameId << ","; 
+  for (auto& c : candidates)
+  {
+    mInitialCandidateFile << c->mnFrameId << "," << c->mLoopScore << ",";
+  }
+  mInitialCandidateFile.seekp(-1, mInitialCandidateFile.cur);
+  mInitialCandidateFile << "\n";
+}
+
 void MetricLogger::filteredCandidates(const std::vector<ScoredKeyFrame>& candidates)
 {
   if (candidates.empty()) return;
@@ -136,6 +163,7 @@ void MetricLogger::filteredCandidates(const std::vector<ScoredKeyFrame>& candida
   {
     mFilteredCandidateFile << c.kf->mnFrameId << "," << c.score << ",";
   }
+  mFilteredCandidateFile.seekp(-1, mFilteredCandidateFile.cur);
   mFilteredCandidateFile << "\n";
 }
 
@@ -148,6 +176,7 @@ void MetricLogger::consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>&
   {
     mConsistentCandidateFile << c->mnFrameId << "," << c->mLoopScore << ",";
   }
+  mConsistentCandidateFile.seekp(-1, mConsistentCandidateFile.cur);
   mConsistentCandidateFile << "\n";
 }
 

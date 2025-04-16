@@ -36,10 +36,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_RANSAC_INLIERS 5
-#define PROJECTION_THRESHOLD 10
-#define FINAL_NUM_MATCH_POINTS 40
-
 namespace ORB_SLAM2
 {
 
@@ -289,7 +285,7 @@ bool LoopClosing::ComputeSim3()
 
         int nmatches = matcher.SearchByBoW(mpCurrentKF,pKF,vvpMapPointMatches[i]);
 
-        if(nmatches<NUM_RANSAC_INLIERS)
+        if(nmatches<mLoopClosureConfig.numRansacInliers)
         {
             vbDiscarded[i] = true;
             continue;

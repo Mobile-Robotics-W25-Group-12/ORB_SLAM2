@@ -79,6 +79,11 @@ public:
     mParamsFile << "numMatchPoints: " << numMatchPoints << std::endl;    
   }
 
+  void logIsStereo(bool isStereo)
+  { 
+    mParamsFile << "isStereo: " << isStereo << std::endl;
+  }
+
   void logVectorFilepath(const std::string& filepath)
   { 
     mParamsFile << "vectorFilepath: " << filepath << std::endl;

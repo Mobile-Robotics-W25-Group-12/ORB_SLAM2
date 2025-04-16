@@ -36,9 +36,22 @@ MetricLogger::MetricLogger()
   mParamsFile = std::ofstream{mLogDir + "/params.yaml"};
   // mTrajectoryFile = std::ofstream{log_dir + "trajectory.txt"}
 
-  mLogFile << "id,numInitialCandidates,numFilteredCandidates,numAccFilteredCandidates,"
-              "numConsistentCandidates,loopDetected,numMatched,"
-              "matchedKf,computeSuccess,minScore,detectLoopMs,computeSimMs" << std::endl;
+  mLogFile
+    << "id,"
+    << "numInitialCandidates,"
+    << "numFilteredCandidates,"
+    << "numAccFilteredCandidates,"
+    << "numConsistentCandidates,"
+    << "loopDetected,"
+    << "numMatchedFrames,"
+    << "ransacPoseEstimateSolved,"
+    << "poseOptimized,"
+    << "matchedKf,"
+    << "computeSuccess,"
+    << "minScore,"
+    << "detectLoopDurationMs,"
+    << "computeSimDurationMs"
+    << std::endl;
   // mConsistentCandidateFile << "id, frames" << std::endl;
 }
 
@@ -47,17 +60,19 @@ void MetricLogger::logFrame()
   if (mActiveFrame)
   {
     mLogFile 
-      << mCurrentMetrics.frameId << "," 
-      << mCurrentMetrics.numInitialCandidates << "," 
-      << mCurrentMetrics.numFilteredCandidates << "," 
-      << mCurrentMetrics.numAccFilteredCandidates << "," 
-      << mCurrentMetrics.numConsistentCandidates << "," 
-      << mCurrentMetrics.loopDetected << "," 
-      << mCurrentMetrics.numMatched << ","
+      << mCurrentMetrics.frameId << ","
+      << mCurrentMetrics.numInitialCandidates << ","
+      << mCurrentMetrics.numFilteredCandidates << ","
+      << mCurrentMetrics.numAccFilteredCandidates << ","
+      << mCurrentMetrics.numConsistentCandidates << ","
+      << mCurrentMetrics.loopDetected << ","
+      << mCurrentMetrics.numMatchedFrames << ","
+      << mCurrentMetrics.ransacPoseEstimateSolved << ","
+      << mCurrentMetrics.poseOptimized << ","
       << mCurrentMetrics.matchedKf << ","
       << mCurrentMetrics.computeSuccess << ","
       << mCurrentMetrics.minScore << ","
-      << mCurrentMetrics.detectLoopDurationMs << "," 
+      << mCurrentMetrics.detectLoopDurationMs << ","
       << mCurrentMetrics.computeSimDurationMs << "\n";
 
     mActiveFrame = false;
@@ -82,51 +97,6 @@ void MetricLogger::trajectory(KeyFrame* pKF)
   cv::Mat t = pKF->GetCameraCenter();
   mTrajectoryFile << setprecision(6) << pKF->mTimeStamp << setprecision(7) << " " << t.at<float>(0) << " " << t.at<float>(1) << " " << t.at<float>(2)
     << " " << q[0] << " " << q[1] << " " << q[2] << " " << q[3] << "\n";
-}
-
-void MetricLogger::numInitialCandidates(int n)
-{
-  mCurrentMetrics.numInitialCandidates = n;
-}
-
-void MetricLogger::numFilteredCandidates(int n)
-{
-  mCurrentMetrics.numFilteredCandidates = n;
-}
-
-void MetricLogger::numAccFilteredCandidates(int n)
-{
-  mCurrentMetrics.numAccFilteredCandidates = n;
-}
-
-void MetricLogger::numConsistentCandidates(int n)
-{
-  mCurrentMetrics.numConsistentCandidates = n;
-}
-
-void MetricLogger::numMatched(int n)
-{
-  mCurrentMetrics.numMatched = n;
-}
-
-void MetricLogger::loopDetected(bool detected)
-{
-  mCurrentMetrics.loopDetected = detected;
-}
-
-void MetricLogger::computeSuccess(bool success)
-{
-  mCurrentMetrics.computeSuccess = success;
-}
-
-void MetricLogger::matchedKf(int matchedKf)
-{
-  mCurrentMetrics.matchedKf = matchedKf;
-}
-
-void MetricLogger::minScore(float score)
-{
-  mCurrentMetrics.minScore = score;
 }
 
 void MetricLogger::connectedFrames(const std::set<ORB_SLAM2::KeyFrame*> connectedFrames) {

@@ -6,6 +6,8 @@
 #include <vector>
 #include <set>
 
+#include "LoopClosureConfig.h"
+
 namespace ORB_SLAM2
 {
 
@@ -19,11 +21,12 @@ struct FrameMetrics
   int numFilteredCandidates{};
   int numAccFilteredCandidates{};
   int numConsistentCandidates{};
-  bool loopDetected{false};
-  int numMatched{};
+  bool loopDetected{};
+  int numMatchedFrames{};
+  bool ransacPoseEstimateSolved{};
+  bool poseOptimized{};
   int matchedKf{};
-  bool poseEstimated{false};
-  bool computeSuccess{false};
+  bool computeSuccess{};
   float minScore{};
   float detectLoopDurationMs{};
   float computeSimDurationMs{};
@@ -38,15 +41,6 @@ public:
   void startFrame(int id);
   
   void trajectory(KeyFrame* kf);
-  void numInitialCandidates(int n);
-  void numFilteredCandidates(int n);
-  void numAccFilteredCandidates(int n);
-  void numConsistentCandidates(int n);
-  void numMatched(int n);
-  void loopDetected(bool detected);
-  void computeSuccess(bool success);
-  void matchedKf(int matchedKf);
-  void minScore(float score);
 
   void flush()
   {
@@ -57,26 +51,33 @@ public:
     mTrajectoryFile.flush();
   }
   
-  void detectLoopDuration(float ms)
-  {
-    mCurrentMetrics.detectLoopDurationMs = ms;
-  }
+  void numInitialCandidates(int n) { mCurrentMetrics.numInitialCandidates = n; }
+  void numFilteredCandidates(int n) { mCurrentMetrics.numFilteredCandidates = n; }
+  void numAccFilteredCandidates(int n) { mCurrentMetrics.numAccFilteredCandidates = n; }
+  void numConsistentCandidates(int n) { mCurrentMetrics.numConsistentCandidates = n; }
+  void loopDetected(bool detected) { mCurrentMetrics.loopDetected = detected; }
+  void numMatchedFrames(int n) { mCurrentMetrics.numMatchedFrames = n; }
+  void ransacPoseEstimateSolved(bool success) { mCurrentMetrics.ransacPoseEstimateSolved = success; }
+  void poseOptimized(bool success) { mCurrentMetrics.poseOptimized = success; }
+  void matchedKf(int n) { mCurrentMetrics.matchedKf = n; }
+  void computeSuccess(bool success) { mCurrentMetrics.computeSuccess = success; }
+  void minScore(float score) { mCurrentMetrics.minScore = score; }
+  void detectLoopDurationMs(float ms) { mCurrentMetrics.detectLoopDurationMs = ms; }
+  void computeSimDurationMs(float ms) { mCurrentMetrics.computeSimDurationMs = ms; }
 
-  void computeSimDuration(float ms)
-  {
-    mCurrentMetrics.computeSimDurationMs = ms;
-  }
-  
   void connectedFrames(const std::set<KeyFrame*> connectedFrames);
   void initialCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void filteredCandidates(const std::vector<ScoredKeyFrame>& candidates);
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
 
-  void logParams(bool useVectorScores, int numRansacInliers, int projTreshold, int numMatchPoints) {
-    mParamsFile << "useVectorScores: " << useVectorScores << "\n";
-    mParamsFile << "numRansacInliers: " << numRansacInliers << "\n";
-    mParamsFile << "projTreshold: " << projTreshold << "\n";
-    mParamsFile << "numMatchPoints: " << numMatchPoints << std::endl;    
+  void logParams(LoopClosureConfig &config) {
+    mParamsFile << "useVectorScores: " << config.useVectorScores << "\n";
+    mParamsFile << "numInitialMatchPoints: " << config.numInitialMatchPoints << "\n";
+    mParamsFile << "numRansacInliers: " << config.numRansacInliers << "\n";
+    mParamsFile << "numOptimizationInliers: " << config.numOptimizationInliers << "\n";
+    mParamsFile << "numProjectedMatchPoints: " << config.numProjectedMatchPoints<< "\n";
+    mParamsFile << "projTreshold: " << config.projTreshold << "\n";
+    mParamsFile << "numProjectedMatchPoints: " << config.numProjectedMatchPoints << std::endl;    
   }
 
   void logIsStereo(bool isStereo)

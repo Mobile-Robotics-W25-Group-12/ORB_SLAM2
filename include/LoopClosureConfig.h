@@ -15,9 +15,11 @@ public:
 
         vectorFilepath = node.at("vectorFilepath").as_str();
         useVectorScores = node.at("useVectorScores").as_bool();
+        numInitialMatchPoints = node.at("numInitialMatchPoints").as_int();
         numRansacInliers = node.at("numRansacInliers").as_int();
+        numOptimizationInliers = node.at("numOptimizationInliers").as_int();
         projTreshold = node.at("projTreshold").as_int();
-        numMatchPoints = node.at("numMatchPoints").as_int();
+        numProjectedMatchPoints = node.at("numProjectedMatchPoints").as_int();
     }
 
     static LoopClosureConfig &instance() {
@@ -27,9 +29,11 @@ public:
 
     std::string vectorFilepath;
     bool useVectorScores = false;
+    int numInitialMatchPoints;
     int numRansacInliers;
+    int numOptimizationInliers;
     int projTreshold;
-    int numMatchPoints;
+    int numProjectedMatchPoints;
 };
 
 }

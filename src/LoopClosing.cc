@@ -36,10 +36,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_RANSAC_INLIERS 5
-#define PROJECTION_THRESHOLD 10
-#define FINAL_NUM_MATCH_POINTS 40
-
 namespace ORB_SLAM2
 {
 
@@ -67,12 +63,7 @@ void LoopClosing::Run()
 {
     mbFinished =false;
 
-    MetricLogger::instance().logParams(
-        mLoopClosureConfig.useVectorScores,
-        mLoopClosureConfig.numRansacInliers,
-        mLoopClosureConfig.projTreshold,
-        mLoopClosureConfig.numMatchPoints
-    );
+    MetricLogger::instance().logParams(mLoopClosureConfig);
 
     while(1)
     {
@@ -84,7 +75,7 @@ void LoopClosing::Run()
             bool loopDetected = DetectLoop();
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<float, std::milli> duration = end - start;
-            MetricLogger::instance().detectLoopDuration(duration.count());
+            MetricLogger::instance().detectLoopDurationMs(duration.count());
             if(loopDetected)
             {
                 MetricLogger::instance().loopDetected(true);
@@ -94,7 +85,7 @@ void LoopClosing::Run()
                bool computedSim = ComputeSim3();               
                end = std::chrono::high_resolution_clock::now();
                duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-               MetricLogger::instance().computeSimDuration(duration.count());
+               MetricLogger::instance().computeSimDurationMs(duration.count());
 
                if(computedSim)
                {
@@ -289,7 +280,7 @@ bool LoopClosing::ComputeSim3()
 
         int nmatches = matcher.SearchByBoW(mpCurrentKF,pKF,vvpMapPointMatches[i]);
 
-        if(nmatches<NUM_RANSAC_INLIERS)
+        if(nmatches<mLoopClosureConfig.numInitialMatchPoints)
         {
             vbDiscarded[i] = true;
             continue;
@@ -304,12 +295,13 @@ bool LoopClosing::ComputeSim3()
         nCandidates++;
     }
 
-    MetricLogger::instance().numMatched(nCandidates);
+    MetricLogger::instance().numMatchedFrames(nCandidates);
 
     bool bMatch = false;
 
     // Perform alternatively RANSAC iterations for each candidate
     // until one is succesful or all fail
+    bool ransacSolved = false;
     while(nCandidates>0 && !bMatch)
     {
         for(int i=0; i<nInitialCandidates; i++)
@@ -337,6 +329,8 @@ bool LoopClosing::ComputeSim3()
             // If RANSAC returns a Sim3, perform a guided matching and optimize with all correspondences
             if(!Scm.empty())
             {
+                ransacSolved = true;
+
                 vector<MapPoint*> vpMapPointMatches(vvpMapPointMatches[i].size(), static_cast<MapPoint*>(NULL));
                 for(size_t j=0, jend=vbInliers.size(); j<jend; j++)
                 {
@@ -353,7 +347,7 @@ bool LoopClosing::ComputeSim3()
                 const int nInliers = Optimizer::OptimizeSim3(mpCurrentKF, pKF, vpMapPointMatches, gScm, 10, mbFixScale);
 
                 // If optimization is succesful stop ransacs and continue
-                if(nInliers>=mLoopClosureConfig.numRansacInliers)
+                if(nInliers>=mLoopClosureConfig.numOptimizationInliers)
                 {
                     bMatch = true;
                     mpMatchedKF = pKF;
@@ -368,6 +362,8 @@ bool LoopClosing::ComputeSim3()
         }
     }
 
+    MetricLogger::instance().ransacPoseEstimateSolved(ransacSolved);
+
     if(!bMatch)
     {
         for(int i=0; i<nInitialCandidates; i++)
@@ -376,6 +372,7 @@ bool LoopClosing::ComputeSim3()
         return false;
     }
 
+    MetricLogger::instance().poseOptimized(true);
     MetricLogger::instance().matchedKf(mpMatchedKF->mnFrameId);
 
     // Retrieve MapPoints seen in Loop Keyframe and neighbors
@@ -411,7 +408,7 @@ bool LoopClosing::ComputeSim3()
             nTotalMatches++;
     }
 
-    if(nTotalMatches>=mLoopClosureConfig.numMatchPoints)
+    if(nTotalMatches>=mLoopClosureConfig.numProjectedMatchPoints)
     {
         for(int i=0; i<nInitialCandidates; i++)
             if(mvpEnoughConsistentCandidates[i]!=mpMatchedKF)
@@ -425,7 +422,6 @@ bool LoopClosing::ComputeSim3()
         mpCurrentKF->SetErase();
         return false;
     }
-
 }
 
 void LoopClosing::CorrectLoop()

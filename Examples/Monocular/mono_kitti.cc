@@ -126,8 +126,11 @@ int main(int argc, char **argv)
 
     // Save camera trajectory
     SLAM.SaveKeyFrameTrajectoryTUM(
-        ORB_SLAM2::MetricLogger::instance().getLogDirectory() + "/KeyFrameTrajectory.txt"
-    );    
+        ORB_SLAM2::MetricLogger::instance().getLogDirectory() + "/KeyFrameTrajectoryTUM.txt"
+    );
+    SLAM.SaveTrajectoryKITTI(
+        ORB_SLAM2::MetricLogger::instance().getLogDirectory() + "/CameraTrajectoryKITTI.txt"
+    );
 
     return 0;
 }
@@ -151,7 +154,7 @@ void LoadImages(const string &strPathToSequence, vector<string> &vstrImageFilena
         }
     }
 
-    string strPrefixLeft = strPathToSequence + "/image_2/";
+    string strPrefixLeft = strPathToSequence + "/image_0/";
 
     const int nTimes = vTimestamps.size();
     vstrImageFilenames.resize(nTimes);

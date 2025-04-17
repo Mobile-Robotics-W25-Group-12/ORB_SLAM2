@@ -1,5 +1,7 @@
-vectorFilepath: datasets/kitti_color/sequences/06/stacked_features.npy
-useVectorScores: true
-numRansacInliers: 5
+vectorFilepath: 06_brightness.npy
+useVectorScores: false
+numInitialMatchPoints: 20
+numRansacInliers: 20
+numOptimizationInliers: 20
 projTreshold: 10
-numMatchPoints: 40
+numProjectedMatchPoints: 40

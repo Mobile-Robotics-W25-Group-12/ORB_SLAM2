@@ -121,3 +121,7 @@ target_link_libraries(mono_fpv ${PROJECT_NAME})
 add_executable(mono_nust-clc
 Examples/Monocular/mono_nust-clc.cc)
 target_link_libraries(mono_nust-clc ${PROJECT_NAME})
+
+add_executable(mono_tartan-air-left
+Examples/Monocular/mono_tartan-air-left.cc)
+target_link_libraries(mono_tartan-air-left ${PROJECT_NAME})

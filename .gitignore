@@ -2,6 +2,11 @@ CMakeLists.txt.user
 Examples/Monocular/mono_euroc
 Examples/Monocular/mono_kitti
 Examples/Monocular/mono_tum
+Examples/Monocular/mono_tum_rgbd
+Examples/Monocular/mono_fpv
+Examples/Monocular/mono_newcollege
+Examples/Monocular/mono_nust-clc
+
 Examples/RGB-D/rgbd_tum
 Examples/ROS/ORB_SLAM2/CMakeLists.txt.user
 Examples/ROS/ORB_SLAM2/Mono

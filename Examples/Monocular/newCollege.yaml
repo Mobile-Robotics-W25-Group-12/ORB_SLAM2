@@ -1,0 +1,39 @@
+%YAML:1.0
+#-----------------------------------------------------------------
+#  Camera parameters  –  Distorted pin‑hole, mono, 848 × 480 @ ~30 Hz
+#-----------------------------------------------------------------
+Camera.fx: 431.387
+Camera.fy: 430.250
+Camera.cx: 427.441
+Camera.cy: 238.527
+
+Camera.k1:  0.0070175
+Camera.k2: -0.0025984
+Camera.p1: -0.0014755
+Camera.p2:  0.0006641
+
+Camera.fps: 30.0          # nominal; real Δt comes from timestamps
+Camera.RGB: 0            # images are IR‑grayscale
+
+#-----------------------------------------------------------------
+#  ORB extractor (KITTI‑style defaults – feel free to tune)
+#-----------------------------------------------------------------
+ORBextractor.nFeatures:   2000
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels:     8
+ORBextractor.iniThFAST:   20
+ORBextractor.minThFAST:   7
+
+#-----------------------------------------------------------------
+#  Viewer (unchanged)
+#-----------------------------------------------------------------
+Viewer.KeyFrameSize:      0.1
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth:    1
+Viewer.PointSize:         2
+Viewer.CameraSize:        0.15
+Viewer.CameraLineWidth:   2
+Viewer.ViewpointX:        0
+Viewer.ViewpointY:       -10
+Viewer.ViewpointZ:       -0.1
+Viewer.ViewpointF:        2000

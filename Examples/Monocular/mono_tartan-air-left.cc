@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 {
     if(argc != 5)
     {
-        cerr << endl << "Usage: ./mono_nust-clc path_to_vocabulary path_to_settings path_to_sequence num_frames" << endl;
+        cerr << endl << "Usage: ./mono_tartan-air-left path_to_vocabulary path_to_settings path_to_sequence num_frames" << endl;
         return 1;
     }
 
@@ -136,13 +136,14 @@ void LoadImages(const string &strPathToSequence, vector<string> &vstrImageFilena
     // cout << "in load images" << endl;
     vTimestamps.resize(num_frames);
     vstrImageFilenames.resize(num_frames);
-    string strPrefixLeft = strPathToSequence;
+    string strPrefixLeft = strPathToSequence + "/image_left/";
     for (int i = 1; i <= num_frames; i++) {
-        vTimestamps[i-1] = ((double)i-1)/40.0; //40 fps
+        vTimestamps[i-1] = ((double)i-1) / 1000.0; //1000 fps
         // cout << vTimestamps[i-1] << endl;
+
         stringstream ss;
-        ss << i;
-        vstrImageFilenames[i-1] = strPrefixLeft + ss.str() +  ".jpg";
+        ss << setfill('0') << setw(6) << i;
+        vstrImageFilenames[i-1] = strPrefixLeft + ss.str() +  "_left.png";
         // cout << vstrImageFilenames[i-1] << endl;
     }
 }

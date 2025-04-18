@@ -69,6 +69,8 @@ public:
   void initialCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void filteredCandidates(const std::vector<ScoredKeyFrame>& candidates);
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
+  void matchedFrames(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
+  void ransacSolvedFrames(const std::set<ORB_SLAM2::KeyFrame*>& candidates);
 
   void logParams(LoopClosureConfig &config) {
     mParamsFile << "useVectorScores: " << config.useVectorScores << "\n";
@@ -108,6 +110,8 @@ private:
   std::ofstream mInitialCandidateFile;
   std::ofstream mFilteredCandidateFile;
   std::ofstream mConsistentCandidateFile;
+  std::ofstream mMatchedFramesFile;
+  std::ofstream mRansacSolvedFramesFile;
   std::ofstream mParamsFile;
   std::ofstream mTrajectoryFile;
   FrameMetrics mCurrentMetrics{};

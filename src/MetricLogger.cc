@@ -33,6 +33,8 @@ MetricLogger::MetricLogger()
   mInitialCandidateFile = std::ofstream{mLogDir + "/initial_candidates.csv"};
   mFilteredCandidateFile = std::ofstream{mLogDir + "/filtered_candidates.csv"};
   mConsistentCandidateFile = std::ofstream{mLogDir + "/consistent_candidates.csv"};
+  mMatchedFramesFile = std::ofstream{mLogDir + "/matched_frames.csv"};
+  mRansacSolvedFramesFile = std::ofstream{mLogDir + "/ransac_solved_frames.csv"};
   mParamsFile = std::ofstream{mLogDir + "/params.yaml"};
   // mTrajectoryFile = std::ofstream{log_dir + "trajectory.txt"}
 
@@ -148,6 +150,31 @@ void MetricLogger::consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>&
   }
   mConsistentCandidateFile.seekp(-1, mConsistentCandidateFile.cur);
   mConsistentCandidateFile << "\n";
+}
+
+
+void MetricLogger::matchedFrames(const std::vector<ORB_SLAM2::KeyFrame*>& candidates) {
+  if (candidates.empty()) return;
+
+  mMatchedFramesFile << mCurrentMetrics.frameId << ","; 
+  for (auto& c : candidates)
+  {
+    mMatchedFramesFile << c->mnFrameId << ",";
+  }
+  mMatchedFramesFile.seekp(-1, mMatchedFramesFile.cur);
+  mMatchedFramesFile << "\n";
+}
+
+void MetricLogger::ransacSolvedFrames(const std::set<ORB_SLAM2::KeyFrame*>& candidates) {
+  if (candidates.empty()) return;
+
+  mRansacSolvedFramesFile << mCurrentMetrics.frameId << ","; 
+  for (auto& c : candidates)
+  {
+    mRansacSolvedFramesFile << c->mnFrameId << ",";
+  }
+  mRansacSolvedFramesFile.seekp(-1, mRansacSolvedFramesFile.cur);
+  mRansacSolvedFramesFile << "\n";
 }
 
 }

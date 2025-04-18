@@ -68,6 +68,7 @@ public:
   void connectedFrames(const std::set<KeyFrame*> connectedFrames);
   void initialCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void filteredCandidates(const std::vector<ScoredKeyFrame>& candidates);
+  void accFilteredCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void matchedFrames(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void ransacSolvedFrames(const std::set<ORB_SLAM2::KeyFrame*>& candidates);
@@ -109,6 +110,7 @@ private:
   std::ofstream mConnectedFramesFile;
   std::ofstream mInitialCandidateFile;
   std::ofstream mFilteredCandidateFile;
+  std::ofstream mAccFilteredCandidateFile;
   std::ofstream mConsistentCandidateFile;
   std::ofstream mMatchedFramesFile;
   std::ofstream mRansacSolvedFramesFile;

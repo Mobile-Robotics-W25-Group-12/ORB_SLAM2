@@ -278,6 +278,7 @@ vector<KeyFrame *> KeyFrameDatabase::CustomDetectLoopCandidates(KeyFrame* kf, fl
 
     std::vector<KeyFrame*> accCandidates = AccumlatedFilterLoopCandidates(kf, scoredCandidates, minScore, minCommonWords);
 
+    MetricLogger::instance().accFilteredCandidates(accCandidates);
     MetricLogger::instance().numAccFilteredCandidates(accCandidates.size());
 
     return accCandidates;

@@ -21,6 +21,10 @@ public:
         numOptimizationInliers = node.at("numOptimizationInliers").as_int();
         projTreshold = node.at("projTreshold").as_int();
         numProjectedMatchPoints = node.at("numProjectedMatchPoints").as_int();
+
+        if(!useVectorScores && minVectorScore > 0.1) {
+            throw std::runtime_error("When useVectorScores: 0, minVectorScore should not be very large");
+        }
     }
 
     static LoopClosureConfig &instance() {

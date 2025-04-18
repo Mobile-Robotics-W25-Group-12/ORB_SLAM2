@@ -239,9 +239,9 @@ float KeyFrameDatabase::MinScore(KeyFrame *kf) {
         if(score<minScore)
             minScore = score;
     }
-    if(loopClosureConfig.useVectorScores) {
-        minScore = std::max(minScore, 0.6f);
-    }
+    // if(loopClosureConfig.useVectorScores) {
+    minScore = std::max(minScore, loopClosureConfig.minVectorScore);
+    // }
     return minScore;
 }
 

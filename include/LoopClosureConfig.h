@@ -14,6 +14,7 @@ public:
         auto node = fkyaml::node::deserialize(in);
 
         vectorFilepath = node.at("vectorFilepath").as_str();
+        minVectorScore = node.at("minVectorScore").as_float();
         useVectorScores = node.at("useVectorScores").as_bool();
         numInitialMatchPoints = node.at("numInitialMatchPoints").as_int();
         numRansacInliers = node.at("numRansacInliers").as_int();
@@ -29,6 +30,7 @@ public:
 
     std::string vectorFilepath;
     bool useVectorScores = false;
+    float minVectorScore;
     int numInitialMatchPoints;
     int numRansacInliers;
     int numOptimizationInliers;

@@ -74,6 +74,7 @@ public:
 
   void logParams(LoopClosureConfig &config) {
     mParamsFile << "useVectorScores: " << config.useVectorScores << "\n";
+    mParamsFile << "minVectorScore: " << config.minVectorScore << "\n";
     mParamsFile << "numInitialMatchPoints: " << config.numInitialMatchPoints << "\n";
     mParamsFile << "numRansacInliers: " << config.numRansacInliers << "\n";
     mParamsFile << "numOptimizationInliers: " << config.numOptimizationInliers << "\n";

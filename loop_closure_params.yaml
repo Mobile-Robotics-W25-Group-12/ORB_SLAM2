@@ -1,4 +1,5 @@
 vectorFilepath: 06_brightness.npy
+minVectorScore: 0.0
 useVectorScores: false
 numInitialMatchPoints: 20
 numRansacInliers: 20

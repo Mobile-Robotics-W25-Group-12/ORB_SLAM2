@@ -129,3 +129,8 @@ target_link_libraries(mono_newcollege ${PROJECT_NAME})
 add_executable(mono_tartan-air-left
 Examples/Monocular/mono_tartan-air-left.cc)
 target_link_libraries(mono_tartan-air-left ${PROJECT_NAME})
+
+
+add_executable(mono_nust-clc_dynamic
+Examples/Monocular/mono_nust-clc_dynamic.cc)
+target_link_libraries(mono_nust-clc_dynamic ${PROJECT_NAME})

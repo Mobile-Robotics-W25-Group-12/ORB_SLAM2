@@ -68,16 +68,19 @@ public:
   void connectedFrames(const std::set<KeyFrame*> connectedFrames);
   void initialCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void filteredCandidates(const std::vector<ScoredKeyFrame>& candidates);
+  void accFilteredCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
   void consistentCandidates(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
+  void matchedFrames(const std::vector<ORB_SLAM2::KeyFrame*>& candidates);
+  void ransacSolvedFrames(const std::set<ORB_SLAM2::KeyFrame*>& candidates);
 
   void logParams(LoopClosureConfig &config) {
     mParamsFile << "useVectorScores: " << config.useVectorScores << "\n";
+    mParamsFile << "minVectorScore: " << config.minVectorScore << "\n";
     mParamsFile << "numInitialMatchPoints: " << config.numInitialMatchPoints << "\n";
     mParamsFile << "numRansacInliers: " << config.numRansacInliers << "\n";
     mParamsFile << "numOptimizationInliers: " << config.numOptimizationInliers << "\n";
     mParamsFile << "numProjectedMatchPoints: " << config.numProjectedMatchPoints<< "\n";
     mParamsFile << "projTreshold: " << config.projTreshold << "\n";
-    mParamsFile << "numProjectedMatchPoints: " << config.numProjectedMatchPoints << std::endl;    
   }
 
   void logIsStereo(bool isStereo)
@@ -107,7 +110,10 @@ private:
   std::ofstream mConnectedFramesFile;
   std::ofstream mInitialCandidateFile;
   std::ofstream mFilteredCandidateFile;
+  std::ofstream mAccFilteredCandidateFile;
   std::ofstream mConsistentCandidateFile;
+  std::ofstream mMatchedFramesFile;
+  std::ofstream mRansacSolvedFramesFile;
   std::ofstream mParamsFile;
   std::ofstream mTrajectoryFile;
   FrameMetrics mCurrentMetrics{};

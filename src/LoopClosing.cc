@@ -265,6 +265,7 @@ bool LoopClosing::ComputeSim3()
 
     int nCandidates=0; //candidates with enough matches
 
+    std::vector<KeyFrame*> matchedFrames; 
     for(int i=0; i<nInitialCandidates; i++)
     {
         KeyFrame* pKF = mvpEnoughConsistentCandidates[i];
@@ -290,12 +291,16 @@ bool LoopClosing::ComputeSim3()
             Sim3Solver* pSolver = new Sim3Solver(mpCurrentKF,pKF,vvpMapPointMatches[i],mbFixScale);
             pSolver->SetRansacParameters(0.99,mLoopClosureConfig.numRansacInliers,300);
             vpSim3Solvers[i] = pSolver;
+            matchedFrames.push_back(pKF);
         }
 
         nCandidates++;
     }
 
     MetricLogger::instance().numMatchedFrames(nCandidates);
+    MetricLogger::instance().matchedFrames(matchedFrames);
+    
+    std::set<KeyFrame*> ransacSolvedFrames; 
 
     bool bMatch = false;
 
@@ -330,6 +335,7 @@ bool LoopClosing::ComputeSim3()
             if(!Scm.empty())
             {
                 ransacSolved = true;
+                ransacSolvedFrames.insert(pKF);
 
                 vector<MapPoint*> vpMapPointMatches(vvpMapPointMatches[i].size(), static_cast<MapPoint*>(NULL));
                 for(size_t j=0, jend=vbInliers.size(); j<jend; j++)
@@ -363,6 +369,7 @@ bool LoopClosing::ComputeSim3()
     }
 
     MetricLogger::instance().ransacPoseEstimateSolved(ransacSolved);
+    MetricLogger::instance().ransacSolvedFrames(ransacSolvedFrames);
 
     if(!bMatch)
     {

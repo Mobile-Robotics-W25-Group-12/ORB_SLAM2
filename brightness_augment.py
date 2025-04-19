@@ -18,7 +18,7 @@ brightness_image_dir.mkdir(exist_ok=True, parents=True)
 
 for img_path in original_image_dir.iterdir():
     new_img_path = brightness_image_dir / img_path.name
-    if int(img_path.stem) <= 500:
+    if int(img_path.stem) <= 700:
         shutil.copy(img_path, new_img_path)
     else:
         img = cv2.imread(str(img_path))

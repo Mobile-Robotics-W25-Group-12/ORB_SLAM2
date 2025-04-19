@@ -31,6 +31,7 @@
 #include<opencv2/core/core.hpp>
 
 #include<System.h>
+#include "MetricLogger.h"
 
 using namespace std;
 
@@ -52,6 +53,9 @@ int main(int argc, char **argv)
     LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps);
 
     const int nImages = vstrImageLeft.size();
+
+    ORB_SLAM2::MetricLogger::instance().logIsStereo(true);
+    ORB_SLAM2::MetricLogger::instance().logDatasetPath(std::string(argv[3]));
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::STEREO,true);
@@ -125,7 +129,10 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectoryKITTI("CameraTrajectory.txt");
+    // SLAM.SaveTrajectoryKITTI("CameraTrajectory.txt");
+    SLAM.SaveTrajectoryKITTI(
+        ORB_SLAM2::MetricLogger::instance().getLogDirectory() + "/CameraTrajectoryKITTI.txt"
+    );
 
     return 0;
 }

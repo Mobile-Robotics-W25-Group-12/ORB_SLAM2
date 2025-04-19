@@ -6,6 +6,8 @@ Examples/Monocular/mono_tum_rgbd
 Examples/Monocular/mono_fpv
 Examples/Monocular/mono_newcollege
 Examples/Monocular/mono_nust-clc
+Examples/Monocular/mono_nust-clc_dynamic
+Examples/Monocular/mono_tartan-air-left
 
 Examples/RGB-D/rgbd_tum
 Examples/ROS/ORB_SLAM2/CMakeLists.txt.user

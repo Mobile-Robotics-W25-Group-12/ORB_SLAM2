@@ -8,7 +8,7 @@ sequences_dir = Path('datasets/kitti_grey/sequences')
 original_dir = sequences_dir / '06'
 original_image_dir = original_dir / 'image_0'
 
-def forward_motion_blur(img, strength=0.07, steps=20):
+def forward_motion_blur(img, strength=0.1, steps=20):
     h, w = img.shape[:2]
     center = (w / 2, h / 2)
     accum = np.zeros_like(img, dtype=np.float32)
@@ -36,7 +36,7 @@ brightness_image_dir.mkdir(exist_ok=True, parents=True)
 for img_path in sorted(original_image_dir.iterdir(),
                        key=lambda p: int(p.stem)):
     new_img_path = brightness_image_dir / img_path.name
-    if int(img_path.stem) <= 500:
+    if int(img_path.stem) <= 730:
         shutil.copy(img_path, new_img_path)
     else:
         img = cv2.imread(str(img_path))

@@ -8,7 +8,7 @@ sequences_dir = Path('datasets/kitti_grey/sequences')
 original_dir = sequences_dir / '06'
 original_image_dir = original_dir / 'image_0'
 
-def forward_motion_blur(img, strength=0.1, steps=20):
+def forward_motion_blur(img, strength=0.07, steps=20):
     h, w = img.shape[:2]
     center = (w / 2, h / 2)
     accum = np.zeros_like(img, dtype=np.float32)

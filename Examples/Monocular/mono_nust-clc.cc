@@ -138,7 +138,7 @@ void LoadImages(const string &strPathToSequence, vector<string> &vstrImageFilena
     vstrImageFilenames.resize(num_frames);
     string strPrefixLeft = strPathToSequence;
     for (int i = 1; i <= num_frames; i++) {
-        vTimestamps[i-1] = ((double)i-1)/40.0; //40 fps
+        vTimestamps[i-1] = ((double)i-1)/10.0; // divided by fps
         // cout << vTimestamps[i-1] << endl;
         stringstream ss;
         ss << i;

@@ -1,0 +1,27 @@
+{
+    "name": "brightness",
+    "num_trials": 5,
+    "config": {
+        "exe": "./Examples/Monocular/mono_kitti",
+        "vocab": "Vocabulary/ORBvoc.txt",
+        "calib": "Examples/Monocular/KITTI04-12.yaml",
+        "dataset": "datasets/kitti_grey/sequences/06_brightness"
+    },
+    "test_cases": [
+        {
+            "name": "bow",
+            "params": {
+                "useVectorScores": false,
+                "minVectorScore": 0.0
+            }
+        },
+        {
+            "name": "boq",
+            "params": {
+                "useVectorScores": true,
+                "minVectorScore": 0.6,
+                "vectorFilepath": "06_brightness.npy"
+            }
+        }
+    ]
+}

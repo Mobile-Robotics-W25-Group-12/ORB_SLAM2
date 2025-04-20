@@ -1,0 +1,82 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+#--------------------------------------------------------------------------------------------
+
+# Camera calibration and distortion parameters (OpenCV) 
+# Camera.fx: 1521.51201
+# Camera.fy: 1517.04419
+# Camera.cx: 1015.83686
+# Camera.cy: 733.813900
+
+# Camera.k1: 0.13483563
+# Camera.k2: -0.45050928
+# Camera.p1: 0.00161253
+# Camera.p2: 0.00596776
+
+Camera.fx: 573.30
+Camera.fy: 573.30
+Camera.cx: 480.00
+Camera.cy: 270.00
+
+# Radial/distortion coefficients – defaults (zero if unknown)
+Camera.k1: 0.000000
+Camera.k2: 0.000000
+Camera.p1: 0.000000
+Camera.p2: 0.000000
+
+# Camera frames per second 
+Camera.fps: 30.0
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 1
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+
+ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 2000
+
+# ORB Extractor: Scale factor between levels in the scale pyramid 	
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid	
+ORBextractor.nLevels: 8
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast			
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+# ORBextractor.nFeatures: 2000
+
+# # Finer scale‐space sampling (default 1.2 → try 1.15 or even 1.1)
+# ORBextractor.scaleFactor: 1.15
+
+# # More pyramid levels (default 8 → try 10 or 12)
+# ORBextractor.nLevels: 10
+
+# # FAST detector threshold: lower → more corners, but potentially more noise
+# #   iniThFAST: first threshold (default 20 → try 10)
+# #   minThFAST: fallback threshold (default 7 → try 3)
+# ORBextractor.iniThFAST: 10
+# ORBextractor.minThFAST: 3
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.1
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth: 1
+Viewer.PointSize:2
+Viewer.CameraSize: 0.15
+Viewer.CameraLineWidth: 2
+Viewer.ViewpointX: 0
+Viewer.ViewpointY: -10
+Viewer.ViewpointZ: -0.1
+Viewer.ViewpointF: 2000
+

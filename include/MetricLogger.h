@@ -81,6 +81,7 @@ public:
     mParamsFile << "numOptimizationInliers: " << config.numOptimizationInliers << "\n";
     mParamsFile << "numProjectedMatchPoints: " << config.numProjectedMatchPoints<< "\n";
     mParamsFile << "projTreshold: " << config.projTreshold << "\n";
+    mParamsFile << "covisibilityConsistencyTh: " << config.covisibilityConsistencyTh << "\n";
   }
 
   void logIsStereo(bool isStereo)

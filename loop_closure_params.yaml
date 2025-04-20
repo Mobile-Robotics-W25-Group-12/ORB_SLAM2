@@ -1,8 +1,8 @@
-vectorFilepath: 06_brightness.npy
-minVectorScore: 0.0
-useVectorScores: false
+minVectorScore: 0.6
 numInitialMatchPoints: 20
-numRansacInliers: 20
 numOptimizationInliers: 20
-projTreshold: 10
 numProjectedMatchPoints: 40
+numRansacInliers: 20
+projTreshold: 10
+useVectorScores: true
+vectorFilepath: 06_brightness.npy

@@ -45,7 +45,7 @@ LoopClosing::LoopClosing(Map *pMap, KeyFrameDatabase *pDB, ORBVocabulary *pVoc, 
     mpMatchedKF(NULL), mLastLoopKFid(0), mbRunningGBA(false), mbFinishedGBA(true),
     mbStopGBA(false), mpThreadGBA(NULL), mbFixScale(bFixScale), mnFullBAIdx(0)
 {
-    mnCovisibilityConsistencyTh = 3;
+    mnCovisibilityConsistencyTh = mLoopClosureConfig.covisibilityConsistencyTh;
 }
 
 void LoopClosing::SetTracker(Tracking *pTracker)

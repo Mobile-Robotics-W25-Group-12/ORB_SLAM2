@@ -21,6 +21,7 @@ public:
         numOptimizationInliers = node.at("numOptimizationInliers").as_int();
         projTreshold = node.at("projTreshold").as_int();
         numProjectedMatchPoints = node.at("numProjectedMatchPoints").as_int();
+        covisibilityConsistencyTh = node.at("covisibilityConsistencyTh").as_int();
 
         if(!useVectorScores && minVectorScore > 0.1) {
             throw std::runtime_error("When useVectorScores: 0, minVectorScore should not be very large");
@@ -40,6 +41,7 @@ public:
     int numOptimizationInliers;
     int projTreshold;
     int numProjectedMatchPoints;
+    int covisibilityConsistencyTh;
 };
 
 }

@@ -45,10 +45,10 @@ def run_experiment(experiment):
         with (test_case_dir / 'trials.json').open('w') as f:
             json.dump([str(i) for i in range(num_trials)], f)
 
-        for i in range(num_trials):
-            subprocess.run(run_command, check=True)
-            log_dir = max(Path('logs').iterdir(), key=lambda f: f.name)
-            log_dir.rename(test_case_dir / str(i))
+            for i in range(num_trials):
+                subprocess.run(run_command, check=True)
+                log_dir = max(Path('logs').iterdir(), key=lambda f: f.name)
+                log_dir.rename(test_case_dir / str(i))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run experiment.")

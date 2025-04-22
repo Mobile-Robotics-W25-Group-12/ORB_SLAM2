@@ -1,8 +1,9 @@
-minVectorScore: 0.6
+covisibilityConsistencyTh: 3
+minVectorScore: 0.0
 numInitialMatchPoints: 20
 numOptimizationInliers: 20
 numProjectedMatchPoints: 40
 numRansacInliers: 20
 projTreshold: 10
-useVectorScores: true
-vectorFilepath: 06_brightness.npy
+useVectorScores: false
+vectorFilepath: ''

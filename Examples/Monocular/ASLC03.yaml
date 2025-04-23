@@ -4,7 +4,6 @@
 # Camera Parameters. Adjust them!
 #--------------------------------------------------------------------------------------------
 
-# REAL CALIBRATION
 Camera.k1: 0.239012179
 Camera.k2: -1.70171095
 Camera.p1: 0.000151502429
@@ -16,7 +15,7 @@ Camera.cx: 482.10566283
 Camera.cy: 268.95534692
 
 # Camera frames per second 
-Camera.fps: 20.0
+Camera.fps: 60.0
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 1

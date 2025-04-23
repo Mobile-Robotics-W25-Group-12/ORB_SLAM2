@@ -135,7 +135,6 @@ add_executable(mono_nust-clc_dynamic
 Examples/Monocular/mono_nust-clc_dynamic.cc)
 target_link_libraries(mono_nust-clc_dynamic ${PROJECT_NAME})
 
-
-add_executable(mono_iphone
-Examples/Monocular/mono_iphone.cc)
-target_link_libraries(mono_iphone ${PROJECT_NAME})
+add_executable(mono_aslc
+Examples/Monocular/mono_aslc.cc)
+target_link_libraries(mono_aslc ${PROJECT_NAME})
